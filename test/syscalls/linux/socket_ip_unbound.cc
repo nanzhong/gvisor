@@ -377,8 +377,9 @@ TEST_P(IPUnboundSocketTest, NullTOS) {
       //
       // Linux's implementation would need fixing as passing a nullptr as optval
       // and non-zero optlen may not be valid.
-      EXPECT_THAT(setsockopt(socket->get(), t.level, t.option, nullptr, set_sz),
-                  SyscallSucceedsWithValue(0));
+      EXPECT_THAT(
+          setsockopt(socket->get(), t.level, t.option, nullptr, set_sz),
+          AnyOf(SyscallFailsWithErrno(EFAULT), SyscallSucceedsWithValue(0)));
     }
   }
   socklen_t get_sz = sizeof(int);
